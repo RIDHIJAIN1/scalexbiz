@@ -111,22 +111,28 @@ const fileSlice = createSlice({
   },
   
   openFile: (state, action: PayloadAction<{ fileId: string }>) => {
-    // Find the file in rootFiles first
+    console.log("Redux: Trying to open file:", action.payload.fileId);
+    
     let file = state.rootFiles.find(f => f.id === action.payload.fileId);
     
-    // If not found, search inside folders
     if (!file) {
       file = state.folders.flatMap(f => f.files).find(f => f.id === action.payload.fileId);
     }
   
     if (file) {
+      console.log("Redux: Found file:", file);
+      
       if (!state.openFiles.find(f => f.id === file.id)) {
         state.openFiles.push(file);
+        console.log("Redux: Added file to openFiles", state.openFiles);
       }
+  
       state.activeFileId = file.id;
+      console.log("Redux: Set activeFileId:", state.activeFileId);
+    } else {
+      console.log("Redux: File not found!");
     }
-  }
-,  
+  },
     editFile(state, action: PayloadAction<{ fileId: string; content: string }>) {
         const file = state.openFiles.find(f => f.id === action.payload.fileId);
         if (file) {

@@ -10,7 +10,7 @@ import {
   deleteFolder,
 } from "@/store/fileSlice";
 import { useState } from "react";
-import { FaFolder, FaFile, FaTrash } from "react-icons/fa";
+import { FaFolder, FaFile, FaTrash, FaBars } from "react-icons/fa";
 
 export default function FileExplorer() {
   const dispatch = useDispatch();
@@ -103,7 +103,9 @@ export default function FileExplorer() {
             {folder.files.map((file) => (
               <div key={file.id} className="ml-4 mt-1 flex justify-between items-center bg-gray-600 p-1 rounded ">
                 <span 
-                  onClick={() => dispatch(openFile({ fileId: file.id }))} 
+                  onClick={() =>
+                    
+                    dispatch(openFile({ fileId: file.id }))} 
                   className="cursor-pointer"
                 >
                   {file.name}
@@ -123,66 +125,76 @@ export default function FileExplorer() {
   };
 
   return (
-    <div className="bg-gray-900 text-white p-4  w-full sm:w-3/4 md:w-1/3 lg:w-1/4  overflow-auto">
+    <>
+      {/* Hamburger Menu Button */}
+      <button 
+        onClick={toggleSidebar} 
+        className="fixed top-4 left-4 z-50 p-2 bg-gray-700 rounded sm:hidden"
+      >
+        <FaBars className="text-white" />
+      </button>
 
-      <div className="relative">
-        <button onClick={toggleSidebar}></button>
-      </div>
-      
-      <h2 className="text-lg font-bold">File Explorer</h2>
+      {/* File Explorer Sidebar */}
+      <div className={`bg-gray-800 text-white p-4 w-full sm:w-3/4 md:w-1/3 lg:w-1/4 overflow-auto fixed sm:relative h-screen transform transition-transform duration-300 ease-in-out ${showSidebar ? 'translate-x-0' : '-translate-x-full sm:translate-x-0'}`}>
+        <h2 className="text-lg font-bold">File Explorer</h2>
 
-      {/* Root Folder Controls */}
-      <div className="flex space-x-2 mt-2">
-        <FaFolder 
-          className="text-yellow-400 cursor-pointer"
-          onClick={() => setShowFolderInput((prev) => ({ ...prev, root: !prev.root }))}
-        />
-        <FaFile 
-          className="text-blue-400 cursor-pointer"
-          onClick={() => setShowFileInput((prev) => ({ ...prev, root: !prev.root }))}
-        />
-      </div>
-
-      {showFolderInput.root && (
+        {/* Root Folder Controls */}
         <div className="flex space-x-2 mt-2">
-          <input
-            type="text"
-            placeholder="New Folder Name"
-            className="bg-gray-700 p-1 w-full rounded"
-            value={folderInputs["root"] || ""}
-            onChange={(e) => setFolderInputs((prev) => ({ ...prev, root: e.target.value }))}
+          <FaFolder 
+            className="text-yellow-400 cursor-pointer"
+            onClick={() => setShowFolderInput((prev) => ({ ...prev, root: !prev.root }))}
           />
-          <button onClick={() => handleCreateFolder()} className="bg-blue-500 px-2 rounded">+</button>
-        </div>
-      )}
-
-      {showFileInput.root && (
-        <div className="flex space-x-2 mt-2">
-          <input
-            type="text"
-            placeholder="New File Name"
-            className="bg-gray-700 p-1 w-full rounded"
-            value={fileInputs["root"] || ""}
-            onChange={(e) => setFileInputs((prev) => ({ ...prev, root: e.target.value }))}
+          <FaFile 
+            className="text-blue-400 cursor-pointer"
+            onClick={() => setShowFileInput((prev) => ({ ...prev, root: !prev.root }))}
           />
-          <button onClick={() => handleCreateFile()} className="bg-green-500 px-2 rounded">+</button>
         </div>
-      )}
 
-      {/* Render Root Files */}
-      <div className="mt-4">
-        {rootFiles.map((file) => (
-          <div key={file.id} className="mt-1 flex justify-between items-center bg-gray-600 p-1 rounded">
-            <span onClick={() => dispatch(openFile({ fileId: file.id }))} className="cursor-pointer">{file.name}</span>
-            <button onClick={() => dispatch(deleteFile({ fileId: file.id }))} className="text-red-400 hover:text-red-600">
-              <FaTrash />
-            </button>
+        {showFolderInput.root && (
+          <div className="flex space-x-2 mt-2">
+            <input
+              type="text"
+              placeholder="New Folder Name"
+              className="bg-gray-700 p-1 w-full rounded"
+              value={folderInputs["root"] || ""}
+              onChange={(e) => setFolderInputs((prev) => ({ ...prev, root: e.target.value }))}
+            />
+            <button onClick={() => handleCreateFolder()} className="bg-blue-500 px-2 rounded">+</button>
           </div>
-        ))}
-      </div>
+        )}
 
-      {/* Render Folders Recursively */}
-      <div className="mt-4">{renderFolders(folders)}</div>
-    </div>
+        {showFileInput.root && (
+          <div className="flex space-x-2 mt-2">
+            <input
+              type="text"
+              placeholder="New File Name"
+              className="bg-gray-700 p-1 w-full rounded"
+              value={fileInputs["root"] || ""}
+              onChange={(e) => setFileInputs((prev) => ({ ...prev, root: e.target.value }))}
+            />
+            <button onClick={() => handleCreateFile()} className="bg-green-500 px-2 rounded">+</button>
+          </div>
+        )}
+
+        {/* Render Root Files */}
+        <div className="mt-4">
+          {
+          rootFiles?.length>0?(
+                  rootFiles.map((file) => (
+            <div key={file.id} className="mt-1 flex justify-between items-center bg-gray-600 p-1 rounded">
+              <span onClick={() => dispatch(openFile({ fileId: file.id }))} className="cursor-pointer">{file.name}</span>
+              <button onClick={() => dispatch(deleteFile({ fileId: file.id }))} className="text-red-400 hover:text-red-600">
+                <FaTrash />
+              </button>
+            </div>
+          ))
+        
+        ):null}
+        </div>
+
+        {/* Render Folders Recursively */}
+        <div className="mt-4">{renderFolders(folders)}</div>
+      </div>
+    </>
   );
 }

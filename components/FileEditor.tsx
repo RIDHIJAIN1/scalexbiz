@@ -25,9 +25,9 @@ export default function FileEditor() {
   if (!openFiles.length) return <div className="flex-1 p-4 text-white">No file open</div>;
 
   return (
-    <div className="flex-1 bg-gray-900 text-white p-4">
+    <div className="flex-1 bg-gray-900 text-white p-4 mt-8 ">
       {/* Tabs */}
-      <div className="flex border-b border-gray-600">
+      <div className="flex border-b border-gray-600 ">
         {openFiles.map(file => (
           <div
             key={file.id}
