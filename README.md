@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📂 File Explorer
 
-## Getting Started
+A **responsive file explorer application** built with **React, Redux, and Tailwind CSS**. This project allows users to **create, open, delete, and manage files and folders** in a nested structure. It features a **hamburger menu** for mobile-friendly navigation.
 
-First, run the development server:
+---
 
+## 🚀 Features
+
+✅ **Create Files and Folders** - Add new files and folders at the root level or inside nested folders.  
+✅ **Open Files** - Open files to view or edit their content.  
+✅ **Delete Files and Folders** - Remove files and folders from the explorer.  
+✅ **Responsive Design** - Works seamlessly on both **desktop** and **mobile devices**.  
+✅ **Nested Structure** - Supports **deeply nested** folders and files.  
+✅ **Duplicate Name Handling** - Automatically appends _(1), (2), etc._ to duplicate file or folder names.  
+
+---
+
+## 🛠 Technologies Used
+
+- **React** - JavaScript library for building user interfaces.
+- **Redux** - State management library for global state handling.
+- **Tailwind CSS** - Utility-first CSS framework for styling.
+- **React Icons** - Library for using icons in React applications.
+- **TypeScript** - Typed superset of JavaScript for better development experience.
+
+---
+
+## 📥 Getting Started
+
+Follow these steps to set up the project on your local machine.
+
+### ⚙️ Prerequisites
+Ensure you have the following installed:
+- **Node.js** (v16 or higher)
+- **npm** (v8 or higher)
+
+### 📌 Installation
+#### 1️⃣ Clone the repository:
+```bash
+git clone https://github.com/RIDHIJAIN1/scalexbiz.git
+cd scalexbiz
+```
+#### 2️⃣ Install dependencies:
+```bash
+npm install
+```
+#### 3️⃣ Start the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+#### 4️⃣ Open the application:
+Visit **[http://localhost:3000](http://localhost:3000)** in your browser to explore the app.
+
+---
+
+## 📂 Project Structure
+
+```
+file-explorer/
+├── public/                  # Static assets
+├── src/
+│   ├── components/          # Reusable components
+│   ├── pages/               # Page components
+│   ├── store/               # Redux store and slices
+│   ├── page.tsx              # Main application component        
+│   └── ...                  # Other configuration files
+├── package.json             # Project dependencies
+├── README.md                # Project documentation
+└── ...                      # Other configuration files
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎯 Usage Guide
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 📁 Creating a Folder
+1️⃣ Click the **folder icon (📁)** to show the folder input field.  
+2️⃣ Enter a name for the folder.  
+3️⃣ Click the **➕ button** to create the folder.  
 
-## Learn More
+### 📄 Creating a File
+1️⃣ Click the **file icon (📄)** to show the file input field.  
+2️⃣ Enter a name for the file (e.g., `example.txt`).  
+3️⃣ Click the **➕ button** to create the file.  
 
-To learn more about Next.js, take a look at the following resources:
+### 📝 Opening a File
+1️⃣ Click on the **file name** to open it.  
+2️⃣ The file content will be displayed in the editor.  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🗑️ Deleting a File or Folder
+1️⃣ Click the **trash icon (🗑️)** next to the file or folder you want to delete.  
+2️⃣ The file or folder will be removed from the explorer.  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🎨 Customization
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### ➕ Adding New Features
+- Create new components in the `src/components/` directory.
+- Update the Redux slice (`src/store/fileSlice.ts`) to handle new actions.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📬 Contact
+
+👩‍💻 **Ridhi Jain**  
+📧 Email: [ridhijain7300@gmail.com](mailto:ridhijain7300@gmail.com)  
+🌍 GitHub: [RIDHIJAIN1](https://github.com/RIDHIJAIN1)  
+
+🚀 **Enjoy exploring your files!**
