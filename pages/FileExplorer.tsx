@@ -25,17 +25,92 @@ export default function FileExplorer() {
 
   const toggleSidebar = () => setShowSidebar(!showSidebar);
 
+  // Helper function to check if a folder name already exists
+  const isFolderNameExists = (folders: any[], name: string): boolean => {
+    return folders.some((folder) => folder.name === name);
+  };
+
+  // Helper function to check if a file name already exists
+  const isFileNameExists = (files: any[], name: string): boolean => {
+    return files.some((file) => file.name === name);
+  };
+
+  // Helper function to generate a unique name
+  const generateUniqueName = (name: string, existingNames: string[]): string => {
+    let uniqueName = name;
+    let count = 1;
+
+    while (existingNames.includes(uniqueName)) {
+      uniqueName = `${name} (${count})`;
+      count++;
+    }
+
+    return uniqueName;
+  };
+
+  // Helper function to find a folder by ID
+  const findFolderById = (folders: any[], id: string): any => {
+    for (const folder of folders) {
+      if (folder.id === id) {
+        return folder;
+      }
+      const foundFolder = findFolderById(folder.folders, id);
+      if (foundFolder) {
+        return foundFolder;
+      }
+    }
+    return null;
+  };
+
   const handleCreateFolder = (parentId?: string) => {
-    if (folderInputs[parentId || "root"]) {
-      dispatch(createFolder({ name: folderInputs[parentId || "root"], parentId }));
+    const folderName = folderInputs[parentId || "root"];
+    if (folderName) {
+      // Get the list of folders where the new folder will be added
+      const targetFolders = parentId
+        ? findFolderById(folders, parentId)?.folders || []
+        : folders;
+
+      // Check if the folder name already exists
+      if (isFolderNameExists(targetFolders, folderName)) {
+        // Generate a unique name
+        const uniqueName = generateUniqueName(
+          folderName,
+          targetFolders.map((folder) => folder.name)
+        );
+        dispatch(createFolder({ name: uniqueName, parentId }));
+      } else {
+        dispatch(createFolder({ name: folderName, parentId }));
+      }
+
+      // Reset the input and hide the input field
       setFolderInputs((prev) => ({ ...prev, [parentId || "root"]: "" }));
       setShowFolderInput((prev) => ({ ...prev, [parentId || "root"]: false }));
     }
   };
 
   const handleCreateFile = (folderId?: string) => {
-    if (fileInputs[folderId || "root"]) {
-      dispatch(createFile({ folderId, name: fileInputs[folderId || "root"] + ".txt" }));
+    const fileName = fileInputs[folderId || "root"];
+    if (fileName) {
+      const formattedName = fileName.endsWith(".txt") ? fileName : `${fileName}.txt`;
+
+      // Get the list of files where the new file will be added
+      const targetFiles = folderId
+        ? findFolderById(folders, folderId)?.files || []
+        : rootFiles;
+
+      // Check if the file name already exists
+      if (isFileNameExists(targetFiles, formattedName)) {
+        // Generate a unique name
+        const uniqueName = generateUniqueName(
+          formattedName,
+          targetFiles.map((file) => file.name)
+        );
+        dispatch(createFile({ folderId, name: uniqueName }));
+      } else {
+        dispatch(createFile({ folderId, name: formattedName }));
+      }
+
+      // Reset the input and hide the input field
       setFileInputs((prev) => ({ ...prev, [folderId || "root"]: "" }));
       setShowFileInput((prev) => ({ ...prev, [folderId || "root"]: false }));
     }
@@ -103,9 +178,7 @@ export default function FileExplorer() {
             {folder.files.map((file) => (
               <div key={file.id} className="ml-4 mt-1 flex justify-between items-center bg-gray-600 p-1 rounded ">
                 <span 
-                  onClick={() =>
-                    
-                    dispatch(openFile({ fileId: file.id }))} 
+                  onClick={() => dispatch(openFile({ fileId: file.id }))} 
                   className="cursor-pointer"
                 >
                   {file.name}

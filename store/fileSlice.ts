@@ -31,7 +31,7 @@ const initialState: FileState = {
   activeFileId: null,
 };
 
-const findFolderById = (folders:Folder[], id:string):Folder| any => {
+const findFolderById = (folders: Folder[], id: string): Folder | null => {
   for (const folder of folders) {
     if (folder.id === id) {
       return folder; // Return the folder if the ID matches
@@ -112,16 +112,27 @@ const fileSlice = createSlice({
   
   openFile: (state, action: PayloadAction<{ fileId: string }>) => {
     console.log("Redux: Trying to open file:", action.payload.fileId);
-    
+  
+    // Search in root files
     let file = state.rootFiles.find(f => f.id === action.payload.fileId);
-    
+  
+    // Search in nested folders
     if (!file) {
-      file = state.folders.flatMap(f => f.files).find(f => f.id === action.payload.fileId);
+      const searchFilesInFolders = (folders: Folder[]): File | undefined => {
+        for (const folder of folders) {
+          const foundFile = folder.files.find(f => f.id === action.payload.fileId);
+          if (foundFile) return foundFile;
+          const foundInSubfolder = searchFilesInFolders(folder.folders);
+          if (foundInSubfolder) return foundInSubfolder;
+        }
+        return undefined;
+      };
+      file = searchFilesInFolders(state.folders);
     }
   
     if (file) {
       console.log("Redux: Found file:", file);
-      
+  
       if (!state.openFiles.find(f => f.id === file.id)) {
         state.openFiles.push(file);
         console.log("Redux: Added file to openFiles", state.openFiles);
@@ -149,25 +160,27 @@ const fileSlice = createSlice({
       }
     },
     deleteFile: (state, action: PayloadAction<{ fileId: string }>) => {
-
-      state.rootFiles = state.rootFiles.filter(file=>file.id !== action.payload.fileId)
-        // Remove the file from all folders
-        state.folders.forEach(folder => {
-          folder.files = folder.files.filter(file => file.id !== action.payload.fileId);
-        });
-
-        console.log("File is clicked to be deleted")
-        console.log(action.payload.fileId)
-      
-        // Remove the file from open files
-        state.openFiles = state.openFiles.filter(file => file.id !== action.payload.fileId);
-        console.log("File is clicked to be deleted")
-        // If the deleted file was active, set a new active file
-        if (state.activeFileId === action.payload.fileId) {
-          state.activeFileId = state.openFiles.length > 0 ? state.openFiles[0].id : null;
-        }
-        console.log("File is clicked to be deleted")
+      // Remove from root files
+      state.rootFiles = state.rootFiles.filter(file => file.id !== action.payload.fileId);
+    
+      // Remove from nested folders
+      const deleteFileFromFolders = (folders: Folder[]): Folder[] => {
+        return folders.map(folder => ({
+          ...folder,
+          files: folder.files.filter(file => file.id !== action.payload.fileId),
+          folders: deleteFileFromFolders(folder.folders), // Recurse into subfolders
+        }));
+      };
+      state.folders = deleteFileFromFolders(state.folders);
+    
+      // Remove from open files
+      state.openFiles = state.openFiles.filter(file => file.id !== action.payload.fileId);
+    
+      // If the deleted file was active, set a new active file
+      if (state.activeFileId === action.payload.fileId) {
+        state.activeFileId = state.openFiles.length > 0 ? state.openFiles[0].id : null;
       }
+    },
   }
 });
 
